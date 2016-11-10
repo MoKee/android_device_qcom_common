@@ -48,7 +48,6 @@
 #include "performance.h"
 #include "power-common.h"
 
-static int display_hint_sent;
 static int video_encode_hint_sent;
 static int current_power_profile = PROFILE_BALANCED;
 
@@ -121,7 +120,7 @@ static void set_power_profile(int profile) {
     current_power_profile = profile;
 }
 
-int  power_hint_override(struct power_module *module, power_hint_t hint,
+int power_hint_override(__unused struct power_module *module, power_hint_t hint,
         void *data)
 {
     int duration, duration_hint;
@@ -209,11 +208,13 @@ int  power_hint_override(struct power_module *module, power_hint_t hint,
         case POWER_HINT_VIDEO_ENCODE:
             process_video_encode_hint(data);
             return HINT_HANDLED;
+        default:
+            break;
     }
     return HINT_NONE;
 }
 
-int  set_interactive_override(struct power_module *module, int on)
+int set_interactive_override(__unused struct power_module *module, int on)
 {
     char governor[80];
 
@@ -236,11 +237,8 @@ int  set_interactive_override(struct power_module *module, int on)
                 (strlen(governor) == strlen(INTERACTIVE_GOVERNOR))) {
                int resource_values[] = {TR_MS_CPU0_50, TR_MS_CPU4_50};
 
-               if (!display_hint_sent) {
-                   perform_hint_action(DISPLAY_STATE_HINT_ID,
-                   resource_values, ARRAY_SIZE(resource_values));
-                  display_hint_sent = 1;
-                }
+                perform_hint_action(DISPLAY_STATE_HINT_ID,
+                        resource_values, ARRAY_SIZE(resource_values));
              } /* Perf time rate set for CORE0,CORE4 8952 target*/
 
     } else {
@@ -249,7 +247,6 @@ int  set_interactive_override(struct power_module *module, int on)
                 (strlen(governor) == strlen(INTERACTIVE_GOVERNOR))) {
 
              undo_hint_action(DISPLAY_STATE_HINT_ID);
-             display_hint_sent = 0;
           }
    }
     return HINT_HANDLED;
