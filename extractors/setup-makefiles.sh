@@ -63,7 +63,7 @@ PLATFORM=msm8960
 SUBSYSTEM=graphics
 
 # Initialize the helper
-setup_vendor "$DEVICE/$PLATFORM/$SUBSYSTEM" "$VENDOR" "$CM_ROOT" true true $SUBSYSTEM
+setup_vendor "$DEVICE/$PLATFORM/$SUBSYSTEM" "$VENDOR" "$MK_ROOT" true true $SUBSYSTEM
 
 # Copyright headers and guards
 write_headers $PLATFORM TARGET_BOARD_PLATFORM
@@ -197,7 +197,7 @@ echo "endif" >> "$PRODUCTMK"
 write_footers
 
 # Add a guard on the top level
-cat << EOF > "$CM_ROOT/vendor/$VENDOR/$DEVICE/Android.mk"
+cat << EOF > "$MK_ROOT/vendor/$VENDOR/$DEVICE/Android.mk"
 LOCAL_PATH := \$(call my-dir)
 
 include \$(CLEAR_VARS)
